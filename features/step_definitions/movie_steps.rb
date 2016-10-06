@@ -28,9 +28,9 @@ Given /^I am on the RottenPotatoes home page$/ do
    click_on "More about #{title}"
  end
 
-#  Then /^(?:|I )should see "([^"]*)"$/ do |text|
-#     expect(page).to have_content(text)
-#  end
+ Then /^(?:|I )should see "([^"]*)"$/ do |text|
+    expect(page).to have_content(text)
+ end
 
  When /^I have edited the movie "(.*?)" to change the rating to "(.*?)"$/ do |movie, rating|
   click_on "Edit"
@@ -88,5 +88,20 @@ Then /^I should see all of the movies$/ do
     expect(Movie.count == find('tbody').all('tr').size).to be_truthy
 end
 
+When /^I have sorted the movies alphabetically$/ do
+    click_link 'Movie Title'
+end
 
+Then /^I should see "(.*?)" before "(.*?)"$/ do |movie_0, movie_1|
+    #expect(!!/#{movie_0}(.|\n)*?#{movie_1}/.match(page.body)).to be_truthy
+    expect(page.body.index(movie_0) < page.body.index(movie_1)).to be_truthy
+end
 
+When /^I have sorted the movies by release date$/ do
+    click_link 'Release Date'
+end
+
+Then /^I should see the oldest movie before the latest one$/ do
+    tr_list = find('tbody').all('tr')
+    expect(Date.parse(tr_list.first.text) < Date.parse(tr_list.last.text)).to be_truthy
+end
