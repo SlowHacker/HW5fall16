@@ -85,7 +85,7 @@ Then /^I should see only movies rated: "(.*?)"$/ do |arg1|
 end
 
 Then /^I should see all of the movies$/ do
-    expect(Movie.count == find('tbody').all('tr').size).to be_truthy
+    expect(find('tbody').all('tr').size).to eq(Movie.count)
 end
 
 When /^I have sorted the movies alphabetically$/ do
@@ -93,8 +93,8 @@ When /^I have sorted the movies alphabetically$/ do
 end
 
 Then /^I should see "(.*?)" before "(.*?)"$/ do |movie_0, movie_1|
-    #expect(!!/#{movie_0}(.|\n)*?#{movie_1}/.match(page.body)).to be_truthy
-    expect(page.body.index(movie_0) < page.body.index(movie_1)).to be_truthy
+    expect(page.body).to match(/#{movie_0}.*#{movie_1}/m)
+    #expect(page.body.index(movie_0) < page.body.index(movie_1)).to be_truthy
 end
 
 When /^I have sorted the movies by release date$/ do
@@ -103,5 +103,5 @@ end
 
 Then /^I should see the oldest movie before the latest one$/ do
     tr_list = find('tbody').all('tr')
-    expect(Date.parse(tr_list.first.text) < Date.parse(tr_list.last.text)).to be_truthy
+    expect(Date.parse(tr_list.first.all('td')[2].text) < Date.parse(tr_list.last.all('td')[2].text)).to be_truthy
 end
